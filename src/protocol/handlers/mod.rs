@@ -1,3 +1,5 @@
+pub mod pdig_handler;
+pub use pdig_handler::*;
 pub mod pbp_handler;
 pub use pbp_handler::*;
 pub mod chat_handler;

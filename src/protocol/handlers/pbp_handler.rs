@@ -2,7 +2,7 @@ use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
 
 use std::error::Error;
 
-use crate::protocol::{packet::Packet, player_cons::*};
+use crate::protocol::{packet::Packet, player_cons::*, utils::kick::kick};
 
 pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
     let mut x = i32::from_be_bytes(packet.content[0..=3].try_into()?);
@@ -11,7 +11,8 @@ pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b
     let d = packet.content[9];
     let bid = i16::from_be_bytes(packet.content[10..=11].try_into()?).abs();
 
-    if x == -1 && y == 0xFF && z == -1 {
+    if x == -1 && y == 0xFF && z == -1 && d == 0xFF {
+        kick(pc, "0F xyzd -1").await?;
     } else {
         match d {
             0 => y -= 1,
@@ -20,7 +21,7 @@ pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b
             3 => z += 1,
             4 => x -= 1,
             5 => x += 1,
-            _ => return Ok(()) // assumes nothing happened
+            _ => kick(pc, &format!("0F d {d:02x}")).await?
         }
 
         let mut packet = Packet::new(0x35);

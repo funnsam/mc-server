@@ -15,6 +15,8 @@ pub async fn sync() -> Result<(), Box<dyn Error>> { unsafe {
         let mut packet = Packet::new(0x03);
         packet.append(&write_str16(i).unwrap());
         pks.push(packet.to_vec());
+
+        println!("\x1b[1;36mingame: \x1b[0m{}", i);
     }
 
     for pc in &mut crate::protocol::player_cons::PLAYER_CONS {
