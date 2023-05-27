@@ -80,6 +80,8 @@ pub async fn listen_players() -> Result<(), Box<dyn Error>> { unsafe {
                 0x0A ..= 0x0D => (),
                 0x0E => handle_pdig(&packet, pc).await.unwrap(),
                 0x0F => handle_pbp(&packet, pc).await.unwrap(),
+                0x10 => handle_hc(&packet, pc).await.unwrap(),
+                0x6B => handle_cia(&packet, pc).await.unwrap(),
                 0xFF => {
                     println!("\x1b[1;34minfo: \x1b[0mClient left with message: {}", read_str16(packet.content, 256).unwrap());
                     PLAYER_CONS.remove(i);

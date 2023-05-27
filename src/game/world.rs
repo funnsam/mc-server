@@ -41,13 +41,22 @@ impl World {
         }
     }
     
-    pub async fn send_chunks(&mut self, s: &mut TcpStream, r: i32, c: ChunkPosition) -> Result<(), Box<dyn Error>> {
+    pub async fn send_chunks(&mut self, s: &mut TcpStream, nc: ChunkPosition, oc: Option<ChunkPosition>) -> Result<(), Box<dyn Error>> {
+        let r = crate::config::CONFIG.general.view_distance;
         for x in -r..r {
             for z in -r..r {
                 let t = ChunkPosition {
-                    x: c.x + x,
-                    z: c.z + z
+                    x: nc.x + x,
+                    z: nc.z + z
                 };
+                
+                if oc.is_some() {
+                    if  (nc.x - oc.unwrap().x).abs() > r ||
+                        (nc.z - oc.unwrap().z).abs() > r {
+                        continue;
+                    }
+                }
+
                 send_chunk(s, self.chunk_at(t), t).await?;
             }
         }

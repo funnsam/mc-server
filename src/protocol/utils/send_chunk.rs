@@ -16,8 +16,6 @@ pub async fn send_chunk(socket: &mut TcpStream, c: &Chunk, p: ChunkPosition) -> 
     let rawd = c.to_sendable();
     let cd = deflate(&rawd);
 
-    println!("{} -> {}", rawd.len(), cd.len());
-
     let mut ret_pack = Packet::new(0x33);
     ret_pack.append(&(p.x << 4).to_be_bytes());
     ret_pack.append(&0_i16.to_be_bytes());

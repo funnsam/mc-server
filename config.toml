@@ -1,0 +1,10 @@
+server_info = "Nerd's server"
+
+[general]
+view_distance = 4
+gamemode = 1
+
+[world]
+seed = 0
+dimension = 0
+difficulty = 0

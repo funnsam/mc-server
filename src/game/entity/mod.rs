@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::*;
 
 #[derive(Clone, Debug)]
 pub struct Entity {
@@ -15,6 +15,14 @@ impl Entity {
             rotation: EntityRotation { y: 0.0, p: 0.0 },
             behavior: Arc::new(eb)
         }
+    }
+    pub fn do_action(&mut self, k: u32, a: &[u8]) -> Option<Vec<u8>> {
+        let b = unsafe {
+            &mut *(&(*self.behavior)
+                as *const Box<dyn EntityBehavior>
+                as *mut   Box<dyn EntityBehavior>)
+        };
+        b.do_action(k, a, self)
     }
 }
 
@@ -34,7 +42,8 @@ pub struct EntityRotation {
 // use crate::protocol::packet::*;
 
 pub trait EntityBehavior: std::fmt::Debug + Send + Sync {
-    fn new(e: &mut Entity, id: i32) -> Self where Self: Sized;
+    fn new(id: i32) -> Self where Self: Sized;
+    fn do_action(&mut self, k: u32, args: &[u8], e: &mut Entity) -> Option<Vec<u8>>;
 }
 
 pub mod player;

@@ -1,3 +1,7 @@
+pub mod hc_handler;
+pub use hc_handler::*;
+pub mod cia_handler;
+pub use cia_handler::*;
 pub mod pmove_handler;
 pub use pmove_handler::*;
 pub mod pdig_handler;

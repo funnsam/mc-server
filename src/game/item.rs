@@ -1,5 +1,6 @@
-#[derive(Clone, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Item {
-    pub id: u8,
-    pub meta: u8
+    pub id  : i16,
+    pub meta: i16,
+    pub qty : i16
 }
