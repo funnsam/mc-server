@@ -1,4 +1,4 @@
-server_info = "Nerd's server"
+server_info = "A Minecraft Beta 1.8.x server"
 
 [general]
 view_distance = 4

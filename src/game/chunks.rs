@@ -1,6 +1,6 @@
-use super::block::Block;
+use super::blocks::Block;
 
-#[derive(Clone, Copy, Eq, PartialEq, Hash)]
+#[derive(Clone, Default, Copy, Debug, Eq, PartialEq, Hash)]
 pub struct ChunkPosition {
     pub x: i32,
     pub z: i32,

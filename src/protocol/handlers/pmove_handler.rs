@@ -3,7 +3,7 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 
 use crate::protocol::{packet::Packet, player_cons::*};
-use crate::game::{world::*, entity::*, chunks::*};
+use crate::game::{world::*, entities::*, chunks::*};
 
 pub async fn handle_pmove<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
     let x = f64::from_be_bytes(packet.content[0..=7].try_into().unwrap());

@@ -3,6 +3,7 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 
 use crate::protocol::{packet::Packet, player_cons::*, utils::kick::kick};
+use crate::game::{blocks::*, world::*};
 
 pub async fn handle_pdig<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
     let s = packet.content[0];
@@ -12,6 +13,8 @@ pub async fn handle_pdig<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'
 
     match s {
         0 | 2 => { // todo: ignore 0 if is in survival
+            *get_world().block_at(BlockPosition { x, y, z }) = Block::default();
+            
             let mut packet = Packet::new(0x35);
             packet.append(&x.to_be_bytes());
             packet.append(&y.to_be_bytes());

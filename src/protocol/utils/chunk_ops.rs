@@ -33,3 +33,12 @@ fn deflate(rd: &[u8]) -> Vec<u8> {
     encoder.write_all(rd).unwrap();
     encoder.finish().unwrap()
 }
+
+pub async fn request_unload_chunk(socket: &mut TcpStream, p: ChunkPosition) -> Result<(), Box<dyn std::error::Error>> {
+    let mut ret_pack = Packet::new(0x32);
+    ret_pack.append(&p.x.to_be_bytes());
+    ret_pack.append(&p.z.to_be_bytes());
+    ret_pack.append(&0_i8.to_be_bytes());
+    socket.write_all(&ret_pack.to_vec()).await?;
+    Ok(())
+}

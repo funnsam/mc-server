@@ -3,7 +3,7 @@ use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
 use std::error::Error;
 
 use crate::protocol::{packet::Packet, player_cons::*, utils::{kick::kick, write_packet::write_str16}};
-use crate::game::{world::*, entity::*, chunks::*};
+use crate::game::{world::*, entities::*, chunks::*};
 use crate::config::*;
 
 pub async fn handle_login<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
