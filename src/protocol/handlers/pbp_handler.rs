@@ -9,7 +9,15 @@ pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b
     let mut y = packet.content[4];
     let mut z = i32::from_be_bytes(packet.content[5..=8].try_into()?);
     let d = packet.content[9];
-    let bid = i16::from_be_bytes(packet.content[10..=11].try_into()?).abs();
+    let mut bid = i16::from_be_bytes(packet.content[10..=11].try_into()?);
+    let mut qty = 0;
+    let mut dmg = 0;
+
+    if bid.is_negative() {
+        bid = bid.abs();
+        qty = packet.content[12];
+        dmg = i16::from_be_bytes(packet.content[13..=14].try_into().unwrap());
+    }
 
     if x == -1 && y == 0xFF && z == -1 && d == 0xFF {
         kick(pc, "0F xyzd -1").await?;
@@ -28,7 +36,7 @@ pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b
         packet.append(&x.to_be_bytes());
         packet.append(&y.to_be_bytes());
         packet.append(&z.to_be_bytes());
-        packet.append(&[bid as u8, 0]);
+        packet.append(&[bid as u8, dmg as u8]);
 
         unsafe {
             for pc in &mut PLAYER_CONS {

@@ -60,7 +60,6 @@ pub async fn listen_players() -> Result<(), Box<dyn Error>> { unsafe {
     println!("\x1b[1;34minfo: \x1b[0mStarting b");
 
     loop {
-        let mut rm_ids = Vec::new();
         for (i, pc) in PLAYER_CONS.iter_mut().enumerate() {
             let socket = &mut pc.socket;
 
@@ -73,27 +72,23 @@ pub async fn listen_players() -> Result<(), Box<dyn Error>> { unsafe {
 
             let packet = Packet::from_slice(&buf[0..n]);
 
-
             match packet.kind {
-                0x00 => handle_keep_alive(&packet, pc).await?,
-                0x01 => handle_login(&packet, pc).await?,
-                0x03 => handle_chat(&packet, pc).await?,
+                0x00 => handle_keep_alive(&packet, pc).await.unwrap(),
+                0x01 => handle_login(&packet, pc).await.unwrap(),
+                0x03 => handle_chat(&packet, pc).await.unwrap(),
+                0x0B => handle_pmove(&packet, pc).await.unwrap(),
                 0x0A ..= 0x0D => (),
-                0x0E => handle_pdig(&packet, pc).await?,
-                0x0F => handle_pbp(&packet, pc).await?,
+                0x0E => handle_pdig(&packet, pc).await.unwrap(),
+                0x0F => handle_pbp(&packet, pc).await.unwrap(),
                 0xFF => {
                     println!("\x1b[1;34minfo: \x1b[0mClient left with message: {}", read_str16(packet.content, 256).unwrap());
-
-                    rm_ids.push(i);
+                    PLAYER_CONS.remove(i);
+                    PLAYER_STRS.remove(i);
                 },
                 _ => {
                     println!("\x1b[1;33mwarning: \x1b[0mReceived unknown packet kind: {:02x}, content: {:?}", packet.kind, packet.content);
                 },
             }
-        }
-        for i in rm_ids.into_iter().rev() {
-            PLAYER_CONS.remove(i);
-            PLAYER_STRS.remove(i);
         }
     }
 }}

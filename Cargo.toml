@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 tokio = { version = "1.28.1", features = ["full"] }
 ucs2 = "0.3.2"
+deflate = "1.0.0"
+lazy_static = "1.4.0"

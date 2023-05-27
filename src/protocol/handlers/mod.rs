@@ -1,3 +1,5 @@
+pub mod pmove_handler;
+pub use pmove_handler::*;
 pub mod pdig_handler;
 pub use pdig_handler::*;
 pub mod pbp_handler;
