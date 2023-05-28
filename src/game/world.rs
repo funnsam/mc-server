@@ -57,17 +57,18 @@ impl World {
                     x: oc.x + x,
                     z: oc.z + z
                 };
+    
+                /*
+                // chunk unloading
+                if  (op.x - nc.x).abs() > r ||
+                    (op.z - nc.z).abs() > r {
+                    request_unload_chunk(s, op).await?;
+                } */
                
                 // chunk loading
-                if  (oc.x - np.x).abs() > r ||
-                    (oc.z - np.z).abs() > r {
+                if  (np.x - oc.x).abs() >= r ||
+                    (np.z - oc.z).abs() >= r {
                     send_chunk(s, self.chunk_at(np), np).await?
-                }
-
-                // chunk unloading
-                if  (nc.x - op.x).abs() > r ||
-                    (nc.z - op.z).abs() > r {
-                    request_unload_chunk(s, op).await?;
                 }
             }
         }
