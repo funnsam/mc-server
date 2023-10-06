@@ -5,7 +5,7 @@ use std::error::Error;
 use crate::protocol::{packet::Packet, player_cons::*, utils::kick::kick};
 use crate::game::{world::*, blocks::*};
 
-pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
+pub async fn handle_pbp<'a>(packet: &Packet<'a>, pc: &mut PlayerConection) -> Result<(), Box<dyn Error>> {
     let mut x = i32::from_be_bytes(packet.content[0..=3].try_into()?);
     let mut y = packet.content[4];
     let mut z = i32::from_be_bytes(packet.content[5..=8].try_into()?);
@@ -38,8 +38,8 @@ pub async fn handle_pbp<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b
         packet.append(&[id, meta]);
 
         unsafe {
-            for pc in &mut PLAYER_CONS {
-                let socket = &mut pc.socket;
+            for (_, pc) in &mut *PLAYER_CONS {
+                let socket = get_stream(pc.id);
                 socket.write_all(&packet.to_vec()).await?;
             }
         }

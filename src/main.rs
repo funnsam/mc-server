@@ -1,8 +1,7 @@
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpListener;
+#![allow(cast_ref_to_mut)]
 
-use std::env;
 use std::error::Error;
+use protocol::player_cons::*;
 
 pub mod game;
 pub mod protocol;
@@ -10,6 +9,12 @@ pub mod config;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    unsafe {
+        PLAYER_CONS.init();
+        PLAYER_STRS.init();
+        PLAYER_AT.init();
+    }
+
     let a = tokio::spawn(async move {
         protocol::listener::run().await.unwrap();
     });

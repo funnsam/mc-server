@@ -1,4 +1,4 @@
-use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
+use tokio::io::AsyncWriteExt;
 
 use std::error::Error;
 
@@ -6,10 +6,10 @@ use crate::protocol::{packet::Packet, player_cons::*, utils::{kick::kick, write_
 use crate::game::{world::*, entities::*, chunks::*};
 use crate::config::*;
 
-pub async fn handle_login<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
+pub async fn handle_login<'a>(packet: &Packet<'a>, pc: &mut PlayerConection) -> Result<(), Box<dyn Error>> {
     let cpv = i32::from_be_bytes(packet.content[0..4].try_into().unwrap());
 
-    let socket = &mut pc.socket;
+    let socket = get_stream(pc.id);
 
     if cpv != 17 {
         kick(pc, "Version doesn't match! Expected version MC Beta 1.8.x!").await?;

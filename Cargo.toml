@@ -12,3 +12,4 @@ deflate = "1.0.0"
 lazy_static = "1.4.0"
 toml = "0.7.4"
 serde = { version = "1.0.163", features = ["derive"] }
+lazy_mut = "0.1.0"

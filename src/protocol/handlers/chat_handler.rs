@@ -2,10 +2,10 @@ use tokio::io::AsyncWriteExt;
 
 use std::error::Error;
 
-use crate::protocol::{packet::Packet, player_cons::*, chat::push_chat, utils::{read_packet::read_str16, write_packet::write_str16, kick::kick}};
+use crate::protocol::{packet::Packet, player_cons::*, chat::push_chat, utils::{read_packet::read_str16, kick::kick}};
 
-pub async fn handle_chat<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
-    let socket = &mut pc.socket;
+pub async fn handle_chat<'a>(packet: &Packet<'a>, pc: &mut PlayerConection) -> Result<(), Box<dyn Error>> {
+    let socket = get_stream(pc.id);
     let content = read_str16(packet.content, 128)?;
 
     if content == "/" {

@@ -1,4 +1,4 @@
-use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpStream};
+use tokio::{io::AsyncWriteExt, net::TcpStream};
 
 use std::error::Error;
 
@@ -12,7 +12,7 @@ pub async fn handle_handshake<'a>(packet: &Packet<'a>, socket: &mut TcpStream, s
     ret_pack.append(&write_packet::write_str16("-").unwrap());
     socket.write_all(&ret_pack.to_vec()).await?;
 
-    add_player(get_stream(sid), username.to_string());
+    add_player(sid, username.to_string());
     unsafe {
         crate::protocol::tab_list::TAB_ITEMS.push(username.to_string());
     }

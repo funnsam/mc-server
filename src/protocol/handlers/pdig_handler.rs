@@ -5,7 +5,7 @@ use std::error::Error;
 use crate::protocol::{packet::Packet, player_cons::*, utils::kick::kick};
 use crate::game::{blocks::*, world::*};
 
-pub async fn handle_pdig<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'b>) -> Result<(), Box<dyn Error>> {
+pub async fn handle_pdig<'a>(packet: &Packet<'a>, pc: &mut PlayerConection) -> Result<(), Box<dyn Error>> {
     let s = packet.content[0];
     let x = i32::from_be_bytes(packet.content[1..=4].try_into()?);
     let y = packet.content[5];
@@ -22,8 +22,8 @@ pub async fn handle_pdig<'a, 'b>(packet: &Packet<'a>, pc: &mut PlayerConection<'
             packet.append(&[0, 0]);
 
             unsafe {
-                for pc in &mut PLAYER_CONS {
-                    let socket = &mut pc.socket;
+                for (_, pc) in &mut *PLAYER_CONS {
+                    let socket =get_stream(pc.id);
                     socket.write_all(&packet.to_vec()).await?;
                 }
             }
